@@ -24,8 +24,6 @@ const app = express()
 Configure Express Server
 */
 
-app.set('port', process.env.PORT || 8080)
-
 app.engine('hbs', exphbs(
     {
         defaultLayout: 'main',
@@ -39,10 +37,21 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false}))
 
 /*
+Environment Configuration
+*/
+var config = require('./config')
+
+if (process.env.NODE_ENV == 'development') {
+    HEROKU_CREDENTIALS = config.HEROKU_CREDENTIALS,
+    process.env.PORT = 8080
+} else if (process.env.NODE_ENV == 'production') {
+    HEROKU_CREDENTIALS = process.env.CLEARDB_DATABASE_URL
+}
+/*
 Database Setup and Configuration
 */
 
-const connection = mysql.createConnection(process.env.CLEARDB_DATABASE_URL)
+const connection = mysql.createConnection(HEROKU_CREDENTIALS)
 handleDisconnect(connection)
 
 /*
@@ -71,7 +80,7 @@ app.get('/', function(req, res) {
 Listener
 */
 
-app.listen(app.get('port'))
+app.listen(process.env.PORT)
 
 /*
 Error Handling
