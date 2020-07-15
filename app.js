@@ -58,6 +58,7 @@ handleDisconnect(connection)
 Routing
 */
 
+// Home/Main/Dashboard Route
 app.get('/', function(req, res) {
 
     // Simple query to make sure the database is connected.
@@ -74,6 +75,16 @@ app.get('/', function(req, res) {
     }
     })
     
+})
+
+// Product List Route
+app.get('/product_list', function(req, res) {
+    res.render('product_list')
+})
+
+// Inventory Route
+app.get('/inventory', function(req,res) {
+    res.render('inventory')
 })
 
 /*
