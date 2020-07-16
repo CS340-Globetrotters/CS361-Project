@@ -55,6 +55,20 @@ const connection = mysql.createConnection(DATABASE_CREDENTIALS)
 handleDisconnect(connection)
 
 /*
+Commented out until we decide whether or not we want to use them
+Routing Constants
+  example use: 
+    const products = 'test-products';
+    "app.get('/' + products, function(...."
+    res.render(products, {data:data})
+*/
+// const home = 'home';
+// const inventory = 'inventory';
+// const product_list = "product_list"
+
+
+
+/*
 Routing
 */
 
@@ -77,15 +91,20 @@ app.get('/', function(req, res) {
     
 })
 
+
 // Product List Route
 app.get('/product_list', function(req, res) {
     res.render('product_list')
 })
 
-// Inventory Route
-app.get('/inventory', function(req,res) {
-    res.render('inventory')
-})
+app.get('/inventory', function(req, res) {
+    connection.query('SELECT * FROM `products` WHERE shelf_quantity <= shelf_min_threshold', function(error, results, fields){
+        if (error) {
+          console.log("Error in loading buyer page.")
+        } 
+        res.render('inventory', results)
+    })
+  })
 
 /*
 Listener
