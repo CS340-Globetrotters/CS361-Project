@@ -83,7 +83,7 @@ app.get('/product_list', function(req, res) {
 
 // Inventory Route
 app.get('/inventory', function(req, res) {
-    connection.query('SELECT * FROM `products`', function(error, results, fields){
+    connection.query('SELECT * FROM `products` WHERE shelf_quantity <= shelf_min_threshold`', function(error, results, fields){
         if (error) {
           console.log("Error in loading buyer page.")
         } 
