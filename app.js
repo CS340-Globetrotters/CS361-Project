@@ -42,16 +42,16 @@ Environment Configuration
 var config = require('./config')
 
 if (process.env.NODE_ENV == 'development') {
-    HEROKU_CREDENTIALS = config.HEROKU_CREDENTIALS,
+    var DATABASE_CREDENTIALS = config.LOCAL_DATABSE_CREDENTIALS
     process.env.PORT = 8080
 } else if (process.env.NODE_ENV == 'production') {
-    HEROKU_CREDENTIALS = process.env.CLEARDB_DATABASE_URL
+    var DATABASE_CREDENTIALS = process.env.CLEARDB_DATABASE_URL
 }
 /*
 Database Setup and Configuration
 */
 
-const connection = mysql.createConnection(HEROKU_CREDENTIALS)
+const connection = mysql.createConnection(DATABASE_CREDENTIALS)
 handleDisconnect(connection)
 
 /*
