@@ -99,7 +99,6 @@ app.get('/product_list', function(req, res) {
             console.log("Error loading inventory page: " + error)
         }
         res.render('product_list', results)
-        console.log(results)
     })
 })
 
