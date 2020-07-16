@@ -82,12 +82,8 @@ app.get('/product_list', function(req, res) {
         if (error) {
             console.log("Error loading inventory page: " + error)
         }
-<<<<<<< HEAD
         console.log(results)
         res.render('product_list', {results: results})
-=======
-        res.render('product_list', results)
->>>>>>> b3bb127fbd7e2f865745632624119bd137f6732f
     })
 })
 
