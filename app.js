@@ -78,6 +78,7 @@ app.get('/', function(req, res) {
 
 // Product List Route
 app.get('/product_list', function(req, res) {
+<<<<<<< HEAD
     connection.query('SELECT * FROM `products`', function(error, results, fields){
         if (error) {
             console.log("Error loading inventory page: " + error)
@@ -85,6 +86,9 @@ app.get('/product_list', function(req, res) {
         console.log(results)
         res.render('product_list', {results: results})
     })
+=======
+    res.render('product_list')
+>>>>>>> parent of d4aee91... created query for product_list route and created handlebars for product_list.hbs
 })
 
 // Inventory Route
