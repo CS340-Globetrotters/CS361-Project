@@ -14,7 +14,8 @@
     </tr>
   </thead>
   <tbody>
-    {{#each results}}
+    {{#each this}}
+      {{#if name}}
         <tr>
           <th class="text-center" scope="row">{{id}}</td>
           <td class="text-center">{{name}}</td>
@@ -22,6 +23,7 @@
           <td class="text-center">{{shelf_min_threshold}}</td>
           <td class="text-center">{{shelf_max_threshold}}</td>
         </tr>
+      {{/if}}
     {{/each}}
   <tbody>
 </table>
