@@ -10,15 +10,13 @@
   </thead>
   <tbody>
     {{#each results}}
-      {{#if name}}
         <tr>
-          <th class="text-center" scope="row">{{id}}</td>
-          <td class="text-center">{{name}}</td>
-          <td class="text-center text-danger">{{shelf_quantity}}</td>
-          <td class="text-center">{{shelf_min_threshold}}</td>
-          <td class="text-center">{{shelf_max_threshold}}</td>
+          <th class="text-center" scope="row">{{this.id}}</td>
+          <td class="text-center">{{this.name}}</td>
+          <td class="text-center text-danger">{{this.shelf_quantity}}</td>
+          <td class="text-center">{{this.shelf_min_threshold}}</td>
+          <td class="text-center">{{this.shelf_max_threshold}}</td>
         </tr>
-      {{/if}}
     {{/each}}
   <tbody>
 </table>
