@@ -78,7 +78,13 @@ app.get('/', function(req, res) {
 
 // Product List Route
 app.get('/product_list', function(req, res) {
-    res.render('product_list')
+    connection.query('SELECT * FROM `products`', function(error, results, fields){
+        if (error) {
+            console.log("Error loading inventory page: " + error)
+        }
+        res.render('product_list', results)
+        console.log(results)
+    })
 })
 
 // Inventory Route
