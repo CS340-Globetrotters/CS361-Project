@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <table class="table table-hover">
   <thead class="thead-dark">
     <tr>
@@ -12,7 +11,7 @@
   <tbody>
     {{#each results}}
         <tr>
-          <th class="text-center" scope="row">{{results.id}}</td>
+          <th class="text-center" scope="row">{{this.id}}</td>
           <td class="text-center">{{this.name}}</td>
           <td class="text-center text-danger">{{this.shelf_quantity}}</td>
           <td class="text-center">{{this.shelf_min_threshold}}</td>
@@ -21,5 +20,3 @@
     {{/each}}
   <tbody>
 </table>
-=======
->>>>>>> parent of d4aee91... created query for product_list route and created handlebars for product_list.hbs
