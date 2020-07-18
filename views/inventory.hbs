@@ -17,7 +17,8 @@
 <h3>Version 1.0.1</h3>
 <br>
 
-<h1 class="display-4 text-center">Low On The Shelf Inventory</h1>
+<h1 class="display-4 text-center">Inventory</h1>
+<p class="text-center">Low Shelf Inventory appears in<span class="text-danger"> red</span>.</p>
 <table class="table table-hover">
   <thead class="thead-dark">
     <tr>
@@ -44,7 +45,11 @@
           <td class="text-center">{{total_quantity}}</td>
           <td class="text-center">{{exp_date}}</td>
           <td class="text-center">{{wh_quantity}}</td>
+          {{#if shelf_low}}
+          <td class="text-center text-white bg-danger">{{shelf_quantity}}</td>
+          {{else}}
           <td class="text-center">{{shelf_quantity}}</td>
+          {{/if}}
           <td class="text-center">{{shelf_min_threshold}}</td>
           <td class="text-center">{{shelf_max_threshold}}</td>
         </tr>

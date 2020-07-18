@@ -95,14 +95,24 @@ app.get('/inventory', function(req, res) {
     // Change this to change the query going to the DB
     var inventory_query_string = "SELECT id, name, shelf_quantity, DATE_FORMAT(exp_date,'%m-%d-%Y') AS exp_date, wh_quantity, " +
     "shelf_quantity + wh_quantity AS total_quantity, " +
-    "shelf_min_threshold, shelf_max_threshold FROM products WHERE shelf_quantity <= shelf_min_threshold"
+    "shelf_min_threshold, shelf_max_threshold FROM products"
 
     // Requesting the data from the database
     connection.query(inventory_query_string, function(error, results, fields){
         if (error) {
           var data = "Error in querying the database."
           res.render('inventory', {data:data})
-        } 
+        }
+
+        // Check for items that are low on the shelf and set .shelf_low to true if they are
+        results.forEach(function(value, index) {
+            if (value.shelf_quantity < value.shelf_min_threshold) {
+                value.shelf_low = true
+            } else {
+                value.shelf_low = false
+            }
+        })
+
         res.render('inventory', results)
         console.log(results)
     })
