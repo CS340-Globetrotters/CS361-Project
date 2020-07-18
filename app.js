@@ -130,8 +130,8 @@ app.post('/inventory/new_item', function(req, res) {
     // Form the SQL Query needed to updated the product inventory
     var add_inventory_query_string = "UPDATE products SET " +
     "exp_date = '" + expiration_date + "', " + 
-    "shelf_quantity = " + shelf_inventory + ", " +
-    "wh_quantity = " + wh_inventory + " " + 
+    "shelf_quantity = shelf_quantity + " + shelf_inventory + ", " +
+    "wh_quantity = wh_quantity + " + wh_inventory + " " + 
     "WHERE name = '" + product_name + "'"
 
     // Send the query, if it fails, log to console, if it succeeds, update the screen.
