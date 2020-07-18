@@ -118,6 +118,10 @@ app.get('/inventory', function(req, res) {
     })
   })
 
+// Inventory - New Item Route
+app.post('/inventory/new_item', function(req, res) {
+    console.log(req.body)
+})
 /*
 Listener
 */
