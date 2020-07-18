@@ -21,22 +21,30 @@
 <table class="table table-hover">
   <thead class="thead-dark">
     <tr>
-        <th class="text-center" scope="col">Product Id:</th>
-        <th class="text-center" scope="col">Product Name:</th>
-        <th class="text-center" scope="col">Quantity on Shelf:</th>
-        <th class="text-center" scope="col">Minimum Shelf Threshold:</th>
-        <th class="text-center" scope="col">Shelf Capacity:</th>
+        <th class="text-center" scope="col" colspan="4">Product</th>
+        <th class="text-center bg-secondary" scope="col" colspan="4">Inventory</th>
+    </tr>
+    <tr>
+        <th class="text-center" scope="col">ID</th>
+        <th class="text-center" scope="col">Name</th>
+        <th class="text-center" scope="col">Quantity</th>
+        <th class="text-center" scope="col">Expiration Date</th>
+        <th class="text-center bg-secondary" scope="col">Warehouse</th>
+        <th class="text-center bg-secondary" scope="col">Shelf</th>
+        <th class="text-center bg-secondary" scope="col">Minimum Shelf Threshold</th>
+        <th class="text-center bg-secondary" scope="col">Shelf Capacity</th>
     </tr>
   </thead>
   <tbody>
     {{#each this}}
       {{#if name}}
         <tr>
-          <th class="text-center" scope="row">{{id}}</td>
+          <td class="text-center">{{id}}</td>
           <td class="text-center">{{name}}</td>
-          <td class="text-center text-danger">{{shelf_quantity}}</td>
-          <td class="text-center">{{shelf_min_threshold}}</td>
-          <td class="text-center">{{shelf_max_threshold}}</td>
+          <td class="text-center">{{shelf_quantity}}</td>
+          <td class="text-center">EXP_DATE</td>
+          <td class="text-center">WH_INVENTORY</td>
+          <td class="text-center">SHELF_INVENTORY</td>
         </tr>
       {{/if}}
     {{/each}}
