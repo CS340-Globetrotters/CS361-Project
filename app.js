@@ -120,10 +120,28 @@ app.get('/inventory', function(req, res) {
 
 // Inventory - New Item Route
 app.post('/inventory/new_item', function(req, res) {
+
+    // Grab the necessary data from the POST request body
     var product_name = req.body.product_name_input;
     var wh_inventory = req.body.product_warehouse_inventory_input;
     var shelf_inventory = req.body.product_shelf_inventory_input;
     var expiration_date = req.body.product_expiration_date_input;
+
+    // Form the SQL Query needed to updated the product inventory
+    var add_inventory_query_string = "UPDATE products SET " +
+    "exp_date = '" + expiration_date + "', " + 
+    "shelf_quantity = " + shelf_inventory + ", " +
+    "wh_quantity = " + wh_inventory + " " + 
+    "WHERE name = '" + product_name + "'"
+
+    // Send the query, if it fails, log to console, if it succeeds, update the screen.
+    connection.query(add_inventory_query_string, function(error, results, fields){
+        if (error) {
+            console.log("Add item inventory failed...")
+        } else {
+            res.redirect('/inventory')
+        }
+    })
 })
 /*
 Listener
