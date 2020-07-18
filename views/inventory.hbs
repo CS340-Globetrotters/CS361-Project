@@ -28,7 +28,13 @@
 
           <div class="col">          
             <label for="product_name_input">Product Name</label>
-            <input type="text" class="form-control" id="product_name_input" name="product_name_input">
+            <select class="form-control" id="product_name_input" name="product_name_input">
+              {{#each this}}
+                {{#if name}}
+                  <option>{{name}}</option>
+                {{/if}}
+              {{/each}}
+            </select>
           </div>
 
           <div class="col">
@@ -46,21 +52,6 @@
             <input type="date" class="form-control" id="product_expiration_date_input" name="product_expiration_date_input">
           </div>
 
-          <div class="col">
-            <label>Shelf Threshold</label>
-            <div class="form-row">
-              <div class="col"><input type="number" class="form-control" id="product_shelf_minimum_threshold_input" name="product_shelf_minimum_threshold_input" placeholder="minimum"></div>
-              <div class="col"><input type="number" class="form-control" id="product_shelf_maximum_threshold_input" name="product_shelf_maximum_threshold_input" placeholder="maximum"></div>
-            </div>
-          </div>
-
-          <div class="col">
-            <label>Warehouse Threshold</label>
-            <div class="form-row">
-              <div class="col"><input type="number" class="form-control" id="product_warehouse_minimum_threshold_input" name="product_warehouse_minimum_threshold_input" placeholder="minimum"></div>
-              <div class="col"><input type="number" class="form-control" id="product_warehouse_maximum_threshold_input" name="product_warehouse_maximum_threshold_input" placeholder="maximum"></div>
-            </div>
-          </div>
 
           <div class="col">
             <label>&nbsp;</label>
