@@ -1,3 +1,4 @@
+{{!-- Navbar --}}
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <a class="navbar-brand" href="/">Apple Cart</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -12,13 +13,18 @@
     </div>
 </nav>
 
+{{!-- Content --}}
 <div class="mt-4 container-fluid">
+
+  {{!-- Header/Title --}}
   <div class="row">
     <div class="col">
         <h1 class="display-4 text-left">Inventory</h1>
         <p class="text-left">Low Shelf Inventory appears in<span class="text-danger"> red</span>.</p>
     </div>
   </div>
+
+  {{!-- Add Item Dialogue --}}
   <div class="row">
     <div class="col">
       <h3 class="text-center">Add Item</h3>
@@ -63,6 +69,8 @@
       </form>
     </div>
   </div>
+
+  {{!-- Table --}}
   <div class="row mt-5">
     <table class="table table-hover">
       <thead class="thead-dark">
