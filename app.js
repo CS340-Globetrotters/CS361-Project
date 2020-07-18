@@ -113,8 +113,8 @@ app.get('/inventory', function(req, res) {
             }
         })
 
+        // Send the data to the inventory template
         res.render('inventory', results)
-        console.log(results)
     })
   })
 
