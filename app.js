@@ -97,6 +97,7 @@ app.get('/inventory', function(req, res) {
           res.render('inventory', {data:data})
         } 
         res.render('inventory', results)
+        console.log(results)
     })
   })
 
