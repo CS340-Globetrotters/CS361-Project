@@ -120,7 +120,10 @@ app.get('/inventory', function(req, res) {
 
 // Inventory - New Item Route
 app.post('/inventory/new_item', function(req, res) {
-    console.log(req.body)
+    var product_name = req.body.product_name_input;
+    var wh_inventory = req.body.product_warehouse_inventory_input;
+    var shelf_inventory = req.body.product_shelf_inventory_input;
+    var expiration_date = req.body.product_expiration_date_input;
 })
 /*
 Listener
