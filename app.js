@@ -81,12 +81,12 @@ app.get('/', function(req, res) {
 
 /* 
 Product Catalog Route
-User will be able to view the content of proudct catalog
+User will be able to view the active products in the proudct catalog
 */
 app.get('/product_catalog', function(req, res) {
 
     // Change this to change the query going to the DB
-    var productCatalogQueryString = 'SELECT id, name, type, price, unit, description FROM products'
+    var productCatalogQueryString = 'SELECT id, name, type, price, unit, description FROM products WHERE active is TRUE'
 
     // Requesting the data from the database
     connection.query(productCatalogQueryString, function(error, results, fields){
