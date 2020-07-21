@@ -128,6 +128,18 @@
       <tbody>
         {{#each this}}
           {{#if name}}
+            {{#if not_catalog}}
+            <tr>
+              <td class="text-center bg-secondary">{{id}}</td>
+              <td class="text-center bg-secondary">{{name}}</td>
+              <td class="text-center bg-secondary">{{total_quantity}}</td>
+              <td class="text-center bg-secondary">{{exp_date}}</td>
+              <td class="text-center bg-secondary">{{wh_quantity}}</td>
+              <td class="text-center bg-secondary">{{shelf_quantity}}</td>
+              <td class="text-center bg-secondary">{{shelf_min_threshold}}</td>
+              <td class="text-center bg-secondary">{{shelf_max_threshold}}</td>
+            </tr>
+            {{else}}
             <tr>
               <td class="text-center">{{id}}</td>
               <td class="text-center">{{name}}</td>
@@ -142,6 +154,7 @@
               <td class="text-center">{{shelf_min_threshold}}</td>
               <td class="text-center">{{shelf_max_threshold}}</td>
             </tr>
+            {{/if}}
           {{/if}}
         {{/each}}
       <tbody>

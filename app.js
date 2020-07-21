@@ -115,6 +115,16 @@ app.get('/inventory', function(req, res) {
         }
 
         console.log(results)
+
+        // Check for not active item
+        results.forEach(function(value, index) {
+            if (value.active != 0) {
+                value.not_catalog = false
+            } else {
+                value.not_catalog = true
+            }
+        })
+
         // Check for "Active" items that are low on the shelf and set .shelf_low to true if they are
         results.forEach(function(value, index) {
             if (value.shelf_quantity < value.shelf_min_threshold && value.active != 0) {
