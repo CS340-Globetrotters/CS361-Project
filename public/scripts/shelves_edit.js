@@ -50,9 +50,14 @@ form.addEventListener('submit', function(event) {
     var input_max_wh = form.querySelector('#modal_wh_maximum_threshold')
     
 
-    if (parseInt(input_min.value) > parseInt(input_max.value) || parseInt(input_min_wh.value) > parseInt(input_max_wh.value)) {
+    if (parseInt(input_min.value) > parseInt(input_max.value)) {
         input_min.classList.add("is-invalid")
         input_max.classList.add("is-invalid")
+        event.preventDefault();
+        event.stopPropagation();
+    } else if (parseInt(input_min_wh.value) > parseInt(input_max_wh.value)) {
+        input_min_wh.classList.add("is-invalid")
+        input_max_wh.classList.add("is-invalid")
         event.preventDefault();
         event.stopPropagation();
     }
