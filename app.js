@@ -205,6 +205,12 @@ app.get('/inventory', function(req, res) {
     })
   })
 
+// Transaction Route
+app.get('/transaction', function(req, res){
+    res.render('transaction', {transaction: 1})
+})
+
+
 // Inventory - New Item Route
 app.post('/inventory/new_item', function(req, res) {
 
