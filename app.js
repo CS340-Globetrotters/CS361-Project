@@ -271,7 +271,11 @@ app.get('/inventory', function(req, res) {
 
 // Transaction Route
 app.get('/transaction', function(req, res){
-    res.render('transaction', {transaction: 1})
+    if (req.session.loggedin) {
+        res.render('transaction', {transaction: 1})
+    } else {
+        res.redirect('/login')
+    }
 })
 
 
