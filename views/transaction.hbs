@@ -3,3 +3,39 @@
     <div class="row">Current Basket</div>
     <div class="row">Total and Checkout</div>
 </div>
+{{!-- Content --}}
+<div class="mt-4 container-fluid">
+
+  {{!-- Header/Title --}}
+  <div class="row">
+    <div class="col">
+        <h1 class="display-4 text-left">Transactions</h1>
+        <p class="text-left">Add Item Area.</p>
+        <p class="text-left">Inactive items appears in<span class="text-secondary"> gray</span>.</p>
+        <p class="text-left">Users can click on the row to adjust shelf and warehouse thresholds.</p>
+    </div>
+  </div>
+
+  <div class="row">
+      <div id='gt_available_products_on_shelf_window' class="col-4" style="background-color: #FFDDDD;height: 200px;">
+        
+      </div>
+      <div id='gt_products_in_basket_window' class="col-8" style="background-color: #DDDDFF;height: 200px;">
+
+      </div>
+  </div>
+
+<script src='./transaction.hbs'></script>
+
+
+
+
+
+
+</div>
+
+
+
+
+{{!-- Modal (Popup To Edit Shelves Thresholds) --}}
+{{> shelves_edit_modal}}
