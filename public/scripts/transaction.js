@@ -9,113 +9,136 @@ const productWindow = document.querySelector('#gt_available_products_on_shelf_wi
 const basketWindow = document.querySelector('#gt_products_in_basket_window')
 const productList = document.querySelector('#gt_available_products_list_group')
 const basketTable = document.querySelector('#gt_products_in_basket_table tbody')
+const checkoutButton = document.querySelector('#gt_checkout_button')
 
 // Save the created basket in an array for easy access later
 var basket = {}
 
-// Establish the queries necessesary
-var availableProductQuery = `SELECT id, name, shelf_quantity, wh_quantity, price FROM products WHERE active = true;`
-
 // Add a listener to populate the page when its done loading
 window.addEventListener("load", function() {
-    request(availableProductQuery)
+    productTableBuilder()
 })
 
-function request(query) {
-    var xmlhttp = new XMLHttpRequest();
+function databaseRequest(query) {
+    return new Promise(function(resolve, reject) {
+        var xmlhttp = new XMLHttpRequest();
 
-    xmlhttp.open("POST", "/transaction/get_data/", true)
-    xmlhttp.setRequestHeader("Content-Type", "application/JSON")
-
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
-           if (xmlhttp.status == 200) {
-               productTableBuilder(JSON.parse(xmlhttp.responseText))
-           }
-           else if (xmlhttp.status == 400) {
-              console.log('There was an error 400');
-           }
-           else {
-               console.log('something else other than 200 was returned');
-           }
-        }
-    };
-
-    xmlhttp.send(JSON.stringify({requestedData: query}));
+        xmlhttp.open("POST", "/transaction/get_data/", true)
+        xmlhttp.setRequestHeader("Content-Type", "application/JSON")
+    
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+               if (xmlhttp.status == 200) {
+                   let responseObject = JSON.parse(xmlhttp.responseText)
+                   resolve(responseObject)
+               }
+               else if (xmlhttp.status == 400) {
+                  reject("Error 400")
+               }
+               else {
+                   reject("A different error, not 400.")
+               }
+            }
+        };
+    
+        xmlhttp.send(JSON.stringify({requestedData: query}));
+    })
 }
 
-function productTableBuilder(serverResponseInJSON) {
-    serverResponseInJSON.forEach(element => {
-
-       // create the row with the product name
-       let a = document.createElement("a");
-       a.classList.add("list-group-item", "list-group-item-action", "d-flex", "justify-content-between", "align-items-center")
-       a.innerText = element.name
-
-       
-
-       // add the badge/pill with the shelf inventory
-       if (element.shelf_quantity > 0) {
-            let p = document.createElement("span");
-            p.classList.add("badge", "badge-primary", "badge-pill");
-            p.innerText = element.shelf_quantity
-            
-            a.addEventListener("click", function() {
-                if (element.id in basket){
-                    if (basket[element.id]["shelf_quantity"] > 0){
-                        basket[element.id]["quantity"] += 1;
-                        basket[element.id]["total"] = basket[element.id]["quantity"] * basket[element.id]["unit_price"];
-                        thisQuantity = document.querySelector("#gt_" + element.id + "_quantity")
-                        thisQuantity.innerText = basket[element.id]["quantity"]
-                        thisPrice = document.querySelector("#gt_" + element.id + "_total")
-                        thisPrice.innerText = parseMoney(basket[element.id]["total"])
-                        basket[element.id]["shelf_quantity"] -= 1;
-                        updateTotals()
-                    }
-                } else {
-                item = {id: element.id,
-                    name: element.name,
-                    unit_price: parseInt(element.price * 100),
-                    quantity: 1,
-                    total: parseInt(element.price * 100),
-                    shelf_quantity: parseInt(element.shelf_quantity - 1)
-                }
-                let tr = document.createElement("tr")
-                let name = document.createElement("th")
-                let unit_price = document.createElement("td")
-                let qty = document.createElement("td")
-                let total = document.createElement("td")
-                
-                qty.id = "gt_" + element.id + "_quantity"
-                total.id = "gt_" + element.id + "_total"
-                name.scope = "row"
-                name.innerText = element.name
-                unit_price.innerText = parseMoney(item.unit_price)
-                qty.innerText = 1
-                total.innerText = parseMoney(item.total)
+function productTableBuilder() {
     
-                tr.appendChild(name)
-                tr.appendChild(qty)
-                tr.appendChild(unit_price)
-                tr.appendChild(total)
-                basketTable.appendChild(tr)
-                basket[element.id] = item
-                updateTotals()
-                }
-           })
+    // Establish the queries necessesary
+    var availableProductQuery = `SELECT id, name, shelf_quantity, wh_quantity, price FROM products WHERE active = true;`
+    
+    // Send the query
+    databaseRequest(availableProductQuery).then(function(serverResponseInJSON){
+        serverResponseInJSON.forEach(element => {
 
-            a.appendChild(p)
-       } else {
-            let p = document.createElement("span");
-            p.classList.add("badge", "badge-danger", "badge-pill");
-            a.classList.add("disabled")
-            p.innerText = element.wh_quantity
-            a.appendChild(p)
-       }
+            // create the row with the product name
+            let a = document.createElement("a");
+            a.classList.add("list-group-item", "list-group-item-action", "d-flex", "justify-content-between", "align-items-center")
+            a.innerText = element.name
+     
+            
+     
+            // add the badge/pill with the shelf inventory
+            if (element.shelf_quantity > 0) {
+                 let p = document.createElement("span");
+                 p.classList.add("badge", "badge-primary", "badge-pill");
+                 p.innerText = element.shelf_quantity
+                 
+                 a.addEventListener("click", function() {
+                     if (element.id in basket){
+                         if (basket[element.id]["shelf_quantity"] > 0){
+                             basket[element.id]["quantity"] += 1;
+                             basket[element.id]["total"] = basket[element.id]["quantity"] * basket[element.id]["unit_price"];
+                             thisQuantity = document.querySelector("#gt_" + element.id + "_quantity")
+                             thisQuantity.innerText = basket[element.id]["quantity"]
+                             thisPrice = document.querySelector("#gt_" + element.id + "_total")
+                             thisPrice.innerText = parseMoney(basket[element.id]["total"])
+                             basket[element.id]["shelf_quantity"] -= 1;
+                             updateTotals()
+                         }
+                     } else {
+                     item = {id: element.id,
+                         name: element.name,
+                         unit_price: parseInt(element.price * 100),
+                         quantity: 1,
+                         total: parseInt(element.price * 100),
+                         shelf_quantity: parseInt(element.shelf_quantity - 1)
+                     }
+                     let tr = document.createElement("tr")
+                     let name = document.createElement("th")
+                     let unit_price = document.createElement("td")
+                     let qty = document.createElement("td")
+                     let total = document.createElement("td")
+                     
+                     qty.id = "gt_" + element.id + "_quantity"
+                     total.id = "gt_" + element.id + "_total"
+                     name.scope = "row"
+                     name.innerText = element.name
+                     unit_price.innerText = parseMoney(item.unit_price)
+                     qty.innerText = 1
+                     total.innerText = parseMoney(item.total)
+         
+                     tr.appendChild(name)
+                     tr.appendChild(qty)
+                     tr.appendChild(unit_price)
+                     tr.appendChild(total)
+                     basketTable.appendChild(tr)
+                     basket[element.id] = item
+                     updateTotals()
+                     }
+                })
+     
+                 a.appendChild(p)
+            } else {
+                 let p = document.createElement("span");
+                 p.classList.add("badge", "badge-danger", "badge-pill");
+                 a.classList.add("disabled")
+                 p.innerText = element.wh_quantity
+                 a.appendChild(p)
+            }
+     
+            productList.appendChild(a)
+     
+         });
+    })
+}
 
-       productList.appendChild(a)
+function checkout(userBasket) {
+    
+    // set some variables well need to perform the transaction
+    const basketKeys = Object.keys(userBasket)
+    let checkoutQuery = ''
 
-    });
+    // build the checkout query string
+    basketKeys.forEach(key => {
+        checkoutQuery += `UPDATE products SET shelf_quantity = shelf_quantity - ${basket[key].quantity} WHERE id = ${basket[key].id};`
+    })
+
+    // debug
+    console.log(checkoutQuery)
 }
 
 function updateTotals(){
