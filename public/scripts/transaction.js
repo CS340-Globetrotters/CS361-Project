@@ -12,13 +12,17 @@ const basketTable = document.querySelector('#gt_products_in_basket_table tbody')
 const checkoutButton = document.querySelector('#gt_checkout_button')
 
 // Save the created basket in an array for easy access later
-var basket = {}
+let basket = {}
 
 // Add a listener to populate the page when its done loading
 window.addEventListener("load", function() {
     productTableBuilder()
+    checkoutButton.addEventListener("click", function() {
+        checkout()
+    })
 })
 
+// Define a method to make requests of the database, takes a SQL string as input, returns an array containing row objects for each field.
 function databaseRequest(query) {
     return new Promise(function(resolve, reject) {
         var xmlhttp = new XMLHttpRequest();
@@ -45,8 +49,12 @@ function databaseRequest(query) {
     })
 }
 
+// Builds the product table on the left of the screen
 function productTableBuilder() {
     
+    // Clear the product list if there is one
+    productList.innerHTML = ''
+
     // Establish the queries necessesary
     var availableProductQuery = `SELECT id, name, shelf_quantity, wh_quantity, price FROM products WHERE active = true;`
     
@@ -126,10 +134,11 @@ function productTableBuilder() {
     })
 }
 
-function checkout(userBasket) {
+// Function that executes when the user clicks the checkout button
+function checkout() {
     
     // set some variables well need to perform the transaction
-    const basketKeys = Object.keys(userBasket)
+    const basketKeys = Object.keys(basket)
     let checkoutQuery = ''
 
     // build the checkout query string
@@ -137,8 +146,9 @@ function checkout(userBasket) {
         checkoutQuery += `UPDATE products SET shelf_quantity = shelf_quantity - ${basket[key].quantity} WHERE id = ${basket[key].id};`
     })
 
-    // debug
-    console.log(checkoutQuery)
+    // clear the checkout basket
+    databaseRequest(checkoutQuery).then(clearBasketTable()).then(productTableBuilder())
+    basket = {};
 }
 
 function updateTotals(){
@@ -182,4 +192,12 @@ function applyTax(value) {
     var taxedAmount = parseFloat(value) * taxRate
     taxedAmount *= 100
     return parseInt(taxedAmount)
+}
+
+function clearBasketTable() {
+    basketTable.innerHTML = ''
+}
+
+function clearProductList() {
+    productList.innerHTML = ''
 }
