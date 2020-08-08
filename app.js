@@ -269,13 +269,27 @@ app.get('/inventory', function(req, res) {
     }
   })
 
-// Transaction Route
+// Transaction Routes
 app.get('/transaction', function(req, res){
     if (req.session.loggedin) {
         res.render('transaction', {transaction: 1})
     } else {
         res.redirect('/login')
     }
+})
+
+app.post('/transaction/get_data', function(req, res){
+    var getDataQueryString = req.body.requestedData
+    connection.query(getDataQueryString, function(error, results, fields){
+        
+        // Handle errors
+        if (error) {
+            // console.log(error)
+        }
+        
+        // Perform the query
+        res.send(results)
+    })
 })
 
 

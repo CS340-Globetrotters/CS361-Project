@@ -17,25 +17,41 @@
   </div>
 
   <div class="row">
-      <div id='gt_available_products_on_shelf_window' class="col-4" style="background-color: #FFDDDD;height: 200px;">
-        
-      </div>
-      <div id='gt_products_in_basket_window' class="col-8" style="background-color: #DDDDFF;height: 200px;">
+      
+      <div id='gt_available_products_on_shelf_window' class="col-4 p-2">
+        <h5 class="text-center">Available Products</h5>
+        <div id='gt_available_products_list_group' class="list-group">
 
+        </div>
+      </div>
+      <div id='gt_products_in_basket_window' class="col-8 p-4">
+          <h5 class="text-center">Checkout Basket</h5>
+          <table id='gt_products_in_basket_table' class="table table-striped">
+              <thead>
+                  <th scope="col">Name</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Total</th>
+              </thead>
+              <tbody>
+              </tbody>
+          </table>
+        <div class="row">
+            <div class="col-6">
+                <h5 class="text-right">Subtotal:</h3>
+                <h5 class="text-right">Total Number of Items:</h3>
+                <h5 class="text-right">Total Tax:</h3>
+                <h3 class="text-right">Grand Total:</h3>
+            </div>
+            <div class="col-6" id='gt_products_totals_area'>
+                <h5><span id="gt_subtotal"></span></h3>
+                <h5><span id="gt_n_items"></span></h3>
+                <h5><span id="gt_total_tax"></span></h3>
+                <h3><span id="gt_grand_total"></span></h3>
+            </div>
+        </div>
       </div>
   </div>
-
-<script src='./transaction.hbs'></script>
-
-
-
-
-
-
 </div>
 
-
-
-
-{{!-- Modal (Popup To Edit Shelves Thresholds) --}}
-{{> shelves_edit_modal}}
+<script type="text/javascript" src='./scripts/transaction.js'></script>
