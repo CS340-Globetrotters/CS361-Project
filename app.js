@@ -80,7 +80,8 @@ app.post('/auth', function(req, res) {
 		connection.query('SELECT * FROM users WHERE username = ? AND password = ?', [username, password], function(error, results, fields) {
 			if (results.length > 0) {
 				req.session.loggedin = true;
-				req.session.username = username;
+                req.session.username = username;
+                req.session.userId = results[0].id
 				res.redirect('/');
 			} else {
 				res.send('Incorrect Username and/or Password!');
