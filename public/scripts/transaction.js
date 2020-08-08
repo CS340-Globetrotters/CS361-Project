@@ -12,7 +12,12 @@ const basketTable = document.querySelector('#gt_products_in_basket_table tbody')
 const checkoutButton = document.querySelector('#gt_checkout_button')
 
 // Save the created basket in an array for easy access later
-let basket = {}
+let basket = {  
+    items: {},
+    subtotal: '',
+    totalTax: '',
+    grandTotal: ''    
+}
 
 // Add a listener to populate the page when its done loading
 window.addEventListener("load", function() {
@@ -33,8 +38,13 @@ function databaseRequest(query) {
         xmlhttp.onreadystatechange = function() {
             if (xmlhttp.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
                if (xmlhttp.status == 200) {
-                   let responseObject = JSON.parse(xmlhttp.responseText)
-                   resolve(responseObject)
+                   if (xmlhttp.responseText) {
+                        let responseObject = JSON.parse(xmlhttp.responseText)
+                        resolve(responseObject)
+                   } else {
+                    resolve()
+                   }
+                   
                }
                else if (xmlhttp.status == 400) {
                   reject("Error 400")
@@ -76,15 +86,15 @@ function productTableBuilder() {
                  p.innerText = element.shelf_quantity
                  
                  a.addEventListener("click", function() {
-                     if (element.id in basket){
-                         if (basket[element.id]["shelf_quantity"] > 0){
-                             basket[element.id]["quantity"] += 1;
-                             basket[element.id]["total"] = basket[element.id]["quantity"] * basket[element.id]["unit_price"];
+                     if (element.id in basket.items){
+                         if (basket.items[element.id]["shelf_quantity"] > 0){
+                             basket.items[element.id]["quantity"] += 1;
+                             basket.items[element.id]["total"] = basket.items[element.id]["quantity"] * basket.items[element.id]["unit_price"];
                              thisQuantity = document.querySelector("#gt_" + element.id + "_quantity")
-                             thisQuantity.innerText = basket[element.id]["quantity"]
+                             thisQuantity.innerText = basket.items[element.id]["quantity"]
                              thisPrice = document.querySelector("#gt_" + element.id + "_total")
-                             thisPrice.innerText = parseMoney(basket[element.id]["total"])
-                             basket[element.id]["shelf_quantity"] -= 1;
+                             thisPrice.innerText = parseMoney(basket.items[element.id]["total"])
+                             basket.items[element.id]["shelf_quantity"] -= 1;
                              updateTotals()
                          }
                      } else {
@@ -114,7 +124,7 @@ function productTableBuilder() {
                      tr.appendChild(unit_price)
                      tr.appendChild(total)
                      basketTable.appendChild(tr)
-                     basket[element.id] = item
+                     basket.items[element.id] = item
                      updateTotals()
                      }
                 })
@@ -138,17 +148,23 @@ function productTableBuilder() {
 function checkout() {
     
     // set some variables well need to perform the transaction
-    const basketKeys = Object.keys(basket)
+    const basketKeys = Object.keys(basket.items)
     let checkoutQuery = ''
 
-    // build the checkout query string
+    // build the checkout query string - add the items
     basketKeys.forEach(key => {
-        checkoutQuery += `UPDATE products SET shelf_quantity = shelf_quantity - ${basket[key].quantity} WHERE id = ${basket[key].id};`
+        checkoutQuery += `UPDATE products SET shelf_quantity = shelf_quantity - ${basket.items[key].quantity} WHERE id = ${basket.items[key].id}; `
     })
 
+    // build the sales query string - add the transaction to the sales table
+    checkoutQuery += `INSERT INTO sales (date, total_before_tax, tax_amount, total_after_tax, user_id) VALUES(CURDATE(), ${basket.subtotal}, ${basket.totalTax}, ${basket.grandTotal}, 41);`
+
     // clear the checkout basket
-    databaseRequest(checkoutQuery).then(clearBasketTable()).then(productTableBuilder())
-    basket = {};
+    console.log(checkoutQuery)
+    databaseRequest(checkoutQuery).then(productTableBuilder)
+    clearBasketTable()
+    clearTotals()
+    emptyBasket()
 }
 
 function updateTotals(){
@@ -162,20 +178,28 @@ function updateTotals(){
     var totalTaxValue = 0
     var grandTotalValue = 0
 
-    const basketKeys = Object.keys(basket)
+    const basketKeys = Object.keys(basket.items)
     basketKeys.forEach(key => {
-        element = basket[key]
+        element = basket.items[key]
         subtotalValue += element.total
         nItemsValue += element.quantity
         totalTaxValue += applyTax(element.total)
         grandTotalValue = subtotalValue + totalTaxValue
     })
+    
     subtotal.innerText = parseMoney(subtotalValue)
+    basket.subtotal = parseMoneyWithoutSign(subtotalValue)
+
     nItems.innerText = nItemsValue
+
     totalTax.innerText = parseMoney(totalTaxValue)
+    basket.totalTax = parseMoneyWithoutSign(totalTaxValue)
+
     grandTotal.innerText = parseMoney(grandTotalValue)
+    basket.grandTotal = parseMoneyWithoutSign(grandTotalValue)
 }
 
+//converts an integer representing the number of cents an item costs to a string in the form '$dollars.cents'
 function parseMoney(value) {
     var dollars = parseInt(value / 100)
     var cents = parseInt(value % 100)
@@ -184,6 +208,12 @@ function parseMoney(value) {
     } else {
         return '$' + dollars.toString() + '.' + cents.toString()
     }
+}
+
+// converts an integer representing the number of cents an item costs to a string in the form 'dollars.cents'
+function parseMoneyWithoutSign(value) {
+    valueAsFloat = parseFloat(value) / 100
+    return valueAsFloat
 }
 
 function applyTax(value) {
@@ -200,4 +230,25 @@ function clearBasketTable() {
 
 function clearProductList() {
     productList.innerHTML = ''
+}
+
+function clearTotals() {
+    let subtotal = document.querySelector("#gt_subtotal")
+    let nItems = document.querySelector("#gt_n_items")
+    let totalTax = document.querySelector("#gt_total_tax")
+    let grandTotal = document.querySelector("#gt_grand_total")
+
+    subtotal.innerText = parseMoney(0)
+    nItems.innerText = 0
+    totalTax.innerText = parseMoney(0)
+    grandTotal.innerText = parseMoney(0)
+}
+
+function emptyBasket() {
+    basket = {  
+        items: {},
+        subtotal: '',
+        totalTax: '',
+        grandTotal: ''    
+    }
 }
