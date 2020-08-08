@@ -64,20 +64,20 @@ function productTableBuilder(serverResponseInJSON) {
                 if (element.id in basket){
                     if (basket[element.id]["shelf_quantity"] > 0){
                         basket[element.id]["quantity"] += 1;
-                        basket[element.id]["total"] = parseFloat((basket[element.id]["quantity"] * basket[element.id]["unit_price"]).toFixed(2));
+                        basket[element.id]["total"] = basket[element.id]["quantity"] * basket[element.id]["unit_price"];
                         thisQuantity = document.querySelector("#gt_" + element.id + "_quantity")
                         thisQuantity.innerText = basket[element.id]["quantity"]
                         thisPrice = document.querySelector("#gt_" + element.id + "_total")
-                        thisPrice.innerText = basket[element.id]["total"]
+                        thisPrice.innerText = parseMoney(basket[element.id]["total"])
                         basket[element.id]["shelf_quantity"] -= 1;
                         updateTotals()
                     }
                 } else {
                 item = {id: element.id,
                     name: element.name,
-                    unit_price: parseFloat(element.price),
+                    unit_price: parseInt(element.price * 100),
                     quantity: 1,
-                    total: parseFloat(element.price),
+                    total: parseInt(element.price * 100),
                     shelf_quantity: parseInt(element.shelf_quantity - 1)
                 }
                 let tr = document.createElement("tr")
@@ -90,13 +90,13 @@ function productTableBuilder(serverResponseInJSON) {
                 total.id = "gt_" + element.id + "_total"
                 name.scope = "row"
                 name.innerText = element.name
-                unit_price.innerText = element.price
+                unit_price.innerText = parseMoney(item.unit_price)
                 qty.innerText = 1
-                total.innerText = parseInt(qty.innerText) * parseFloat(unit_price.innerText)
+                total.innerText = parseMoney(item.total)
     
                 tr.appendChild(name)
-                tr.appendChild(unit_price)
                 tr.appendChild(qty)
+                tr.appendChild(unit_price)
                 tr.appendChild(total)
                 basketTable.appendChild(tr)
                 basket[element.id] = item
@@ -124,8 +124,6 @@ function updateTotals(){
     let totalTax = document.querySelector("#gt_total_tax")
     let grandTotal = document.querySelector("#gt_grand_total")
 
-    let taxRate = 0.0635
-
     var subtotalValue = 0
     var nItemsValue = 0
     var totalTaxValue = 0
@@ -134,15 +132,31 @@ function updateTotals(){
     const basketKeys = Object.keys(basket)
     basketKeys.forEach(key => {
         element = basket[key]
-        subtotalValue += parseFloat(element.total.toFixed(2))
+        subtotalValue += element.total
         nItemsValue += element.quantity
-        totalTaxValue += parseFloat((element.total * taxRate).toFixed(2))
-        grandTotalValue += parseFloat((element.total + (element.total * taxRate)).toFixed(2))
+        totalTaxValue += applyTax(element.total)
+        grandTotalValue = subtotalValue + totalTaxValue
     })
-    console.log(subtotalValue, nItemsValue, totalTaxValue, grandTotalValue)
-    subtotal.innerText = subtotalValue
+    subtotal.innerText = parseMoney(subtotalValue)
     nItems.innerText = nItemsValue
-    totalTax.innerText = totalTaxValue
-    grandTotal.innerText = grandTotalValue
+    totalTax.innerText = parseMoney(totalTaxValue)
+    grandTotal.innerText = parseMoney(grandTotalValue)
 }
 
+function parseMoney(value) {
+    var dollars = parseInt(value / 100)
+    var cents = parseInt(value % 100)
+    if (cents < 10) {
+        return '$' + dollars.toString() + '.0' + cents.toString()
+    } else {
+        return '$' + dollars.toString() + '.' + cents.toString()
+    }
+}
+
+function applyTax(value) {
+    value /= 100
+    var taxRate = 0.0635
+    var taxedAmount = parseFloat(value) * taxRate
+    taxedAmount *= 100
+    return parseInt(taxedAmount)
+}
