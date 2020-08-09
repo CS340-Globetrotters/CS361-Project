@@ -10,14 +10,16 @@ const basketWindow = document.querySelector('#gt_products_in_basket_window')
 const productList = document.querySelector('#gt_available_products_list_group')
 const basketTable = document.querySelector('#gt_products_in_basket_table tbody')
 const checkoutButton = document.querySelector('#gt_checkout_button')
+const clearButton = document.querySelector('#gt_clear_button')
 
-// Save the created basket in an array for easy access later
+// Save the created basket in an object for easy access later
 let basket = {  
     items: {},
     subtotal: '',
     totalTax: '',
     grandTotal: '',
-    userId: 0    
+    userId: 0,
+    empty: true    
 }
 
 // Add a listener to populate the page when its done loading
@@ -25,6 +27,11 @@ window.addEventListener("load", function() {
     productTableBuilder()
     checkoutButton.addEventListener("click", function() {
         checkout()
+    })
+    clearButton.addEventListener("click", function() {
+        emptyBasket()
+        clearBasketTable()
+        clearTotals()
     })
 })
 
@@ -102,6 +109,7 @@ function productTableBuilder() {
                                  thisPrice.innerText = parseMoney(basket.items[element.id]["total"])
                                  basket.items[element.id]["shelf_quantity"] -= 1;
                                  updateTotals()
+                                 basket.empty = false
                              }
                          } else {
                          item = {id: element.id,
@@ -132,6 +140,7 @@ function productTableBuilder() {
                          basketTable.appendChild(tr)
                          basket.items[element.id] = item
                          updateTotals()
+                         basket.empty = false
                          }
                     })
          
@@ -153,7 +162,8 @@ function productTableBuilder() {
 
 // Function that executes when the user clicks the checkout button
 function checkout() {
-    
+    if (!(basket.empty)) {
+
     // set some variables well need to perform the transaction
     const basketKeys = Object.keys(basket.items)
     let checkoutQuery = ''
@@ -171,6 +181,7 @@ function checkout() {
     clearBasketTable()
     clearTotals()
     emptyBasket()
+    }
 }
 
 function updateTotals(){
@@ -251,10 +262,13 @@ function clearTotals() {
 }
 
 function emptyBasket() {
+    thisUserId = basket.userId
     basket = {  
         items: {},
         subtotal: '',
         totalTax: '',
-        grandTotal: ''    
+        grandTotal: '',
+        userId: thisUserId,
+        empty: true    
     }
 }
