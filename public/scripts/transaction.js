@@ -11,6 +11,7 @@ const productList = document.querySelector('#gt_available_products_list_group')
 const basketTable = document.querySelector('#gt_products_in_basket_table tbody')
 const checkoutButton = document.querySelector('#gt_checkout_button')
 const clearButton = document.querySelector('#gt_clear_button')
+const errorMessageText = document.querySelector('#gt_transaction_error_message')
 
 // Save the created basket in an object for easy access later
 let basket = {  
@@ -99,7 +100,12 @@ function productTableBuilder() {
                      p.innerText = element.shelf_quantity
                      
                      a.addEventListener("click", function() {
-                         if (element.id in basket.items){
+                        
+                        // remove the error text if there was any 
+                        errorMessageText.innerText = ""
+                        
+                        // update an item in the table if it is already there
+                        if (element.id in basket.items){
                              if (basket.items[element.id]["shelf_quantity"] > 0){
                                  basket.items[element.id]["quantity"] += 1;
                                  basket.items[element.id]["total"] = basket.items[element.id]["quantity"] * basket.items[element.id]["unit_price"];
@@ -110,41 +116,45 @@ function productTableBuilder() {
                                  basket.items[element.id]["shelf_quantity"] -= 1;
                                  updateTotals()
                                  basket.empty = false
-                             }
-                         } else {
-                         item = {id: element.id,
-                             name: element.name,
-                             unit_price: parseInt(element.price * 100),
-                             quantity: 1,
-                             total: parseInt(element.price * 100),
-                             shelf_quantity: parseInt(element.shelf_quantity - 1)
-                         }
-                         let tr = document.createElement("tr")
-                         let name = document.createElement("th")
-                         let unit_price = document.createElement("td")
-                         let qty = document.createElement("td")
-                         let total = document.createElement("td")
-                         
-                         qty.id = "gt_" + element.id + "_quantity"
-                         total.id = "gt_" + element.id + "_total"
-                         name.scope = "row"
-                         name.innerText = element.name
-                         unit_price.innerText = parseMoney(item.unit_price)
-                         qty.innerText = 1
-                         total.innerText = parseMoney(item.total)
-             
-                         tr.appendChild(name)
-                         tr.appendChild(qty)
-                         tr.appendChild(unit_price)
-                         tr.appendChild(total)
-                         basketTable.appendChild(tr)
-                         basket.items[element.id] = item
-                         updateTotals()
-                         basket.empty = false
-                         }
+                            }
+                        
+                        // create a new item in the table
+                        } else {
+                        item = {id: element.id,
+                            name: element.name,
+                            unit_price: parseInt(element.price * 100),
+                            quantity: 1,
+                            total: parseInt(element.price * 100),
+                            shelf_quantity: parseInt(element.shelf_quantity - 1)
+                        }
+                        let tr = document.createElement("tr")
+                        let name = document.createElement("th")
+                        let unit_price = document.createElement("td")
+                        let qty = document.createElement("td")
+                        let total = document.createElement("td")
+                        
+                        qty.id = "gt_" + element.id + "_quantity"
+                        total.id = "gt_" + element.id + "_total"
+                        name.scope = "row"
+                        name.innerText = element.name
+                        unit_price.innerText = parseMoney(item.unit_price)
+                        qty.innerText = 1
+                        total.innerText = parseMoney(item.total)
+            
+                        tr.appendChild(name)
+                        tr.appendChild(qty)
+                        tr.appendChild(unit_price)
+                        tr.appendChild(total)
+                        basketTable.appendChild(tr)
+                        basket.items[element.id] = item
+                        updateTotals()
+                        basket.empty = false
+                        }
                     })
          
                      a.appendChild(p)
+
+                // when an item does not have inventory on the shelf, make it disabled with a red badge showing the warehouse inventory available
                 } else {
                      let p = document.createElement("span");
                      p.classList.add("badge", "badge-danger", "badge-pill");
@@ -164,6 +174,9 @@ function productTableBuilder() {
 function checkout() {
     if (!(basket.empty)) {
 
+    // clear the error message text if there was any
+    errorMessageText.innerText = ""
+
     // set some variables well need to perform the transaction
     const basketKeys = Object.keys(basket.items)
     let checkoutQuery = ''
@@ -181,6 +194,8 @@ function checkout() {
     clearBasketTable()
     clearTotals()
     emptyBasket()
+    } else {
+        errorMessageText.innerText = "You must add at least one item to the basket before checking out."
     }
 }
 
