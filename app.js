@@ -14,6 +14,7 @@ const express = require('express')
 const exphbs = require('express-handlebars')
 const mysql = require('mysql')
 var session = require('express-session');
+const { json } = require('express');
 
 
 /*
@@ -285,11 +286,17 @@ app.post('/transaction/get_data', function(req, res){
         
         // Handle errors
         if (error) {
-            // console.log(error)
+            console.log(error)
         }
         
-        // Perform the query
-        res.send(results)
+        // Parse the data and send it. We appened the user id to the results so we can audit who made what sales
+        results = JSON.parse(JSON.stringify(results))
+        data = {}
+        results.forEach(element => {
+            data[element.id] = element
+        })
+        data.userId = req.session.userId
+        res.send(JSON.stringify(data))
     })
 })
 
