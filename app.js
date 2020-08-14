@@ -371,7 +371,17 @@ app.post('/transaction/return_item', function (req, res) {
     const productName = req.body.product_name_input;
     const numProduct = req.body.quantity_input;
 
-    res.render('transaction',{goodReturn:true, numProduct:numProduct,productName:productName});
+    let return_query_string = 'SELECT * FROM products';
+
+        // Send the query, if it fails, log to console, if it succeeds, update the screen.
+        connection.query(return_query_string, function (error, results, fields) {
+            if (error) {
+                console.log("Dynamic dropdown population failed...");
+            } else {
+                res.render('transaction', { sqlResults: results, goodReturn: true, numProduct:numProduct, productName:productName,transaction: 1 });
+            }
+        })
+    //res.redirect('/transaction?goodReturn=true&numProduct=' + numProduct + '&productName=' + productName);
 })
 
 
