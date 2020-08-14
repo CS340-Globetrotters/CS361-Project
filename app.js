@@ -458,7 +458,7 @@ app.get('/returns', function (req, res) {
             if (error) {
                 console.log("Dynamic dropdown population failed...");
             } else {
-                res.render('returns', { sqlResults: results, transaction: 1 });
+                res.render('returns', { sqlResults: results, returns: 1 });
             }
         })
     } else {
@@ -480,7 +480,7 @@ app.post('/returns/', function (req, res) {
         if (error) {
             console.log("Dynamic dropdown population failed...");
         } else {
-            res.render('returns', { sqlResults: results, transaction: 1, numProduct: numProduct, productName: productName, goodReturn: true });
+            res.render('returns', { sqlResults: results, returns: 1, numProduct: numProduct, productName: productName, goodReturn: true });
 
         }
     })
